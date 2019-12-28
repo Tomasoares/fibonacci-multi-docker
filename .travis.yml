@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker    
+
+before_install:
+  - docker build -t tomasoares/react-test -f ./client/Dockerfile.dev ./client
+    
+script:
+  - docker run -e CI=true tomasoares/react-test npm test
+  
+after_success:
+  - docker build -t tomasoares/fibonacci-client ./client
+  - docker build -t tomasoares/fibonacci-nginx ./nginx
+  - docker build -t tomasoares/fibonacci-server ./server
+  - docker build -t tomasoares/fibonacci-worker ./worker
+  
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  
+  # Take those images and push them to docker hub
+  - docker push tomasoares/fibonacci-client
+  - docker push tomasoares/fibonacci-nginx
+  - docker push tomasoares/fibonacci-server
+  - docker push tomasoares/fibonacci-worker
