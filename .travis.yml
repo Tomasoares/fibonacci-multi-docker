@@ -22,3 +22,16 @@ after_success:
   - docker push tomasoares/fibonacci-nginx
   - docker push tomasoares/fibonacci-server
   - docker push tomasoares/fibonacci-worker
+  
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "fibonacci-docker"
+  env: "FibonacciDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-267699482760"
+  bucket_path: "fibonacci-docker"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
